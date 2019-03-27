@@ -337,30 +337,6 @@ EnemiesHolder.prototype.rotateEnemies = function () {
   }
 };
 
-const Particle = function () {
-  const geom = new THREE.TetrahedronGeometry(3, 0);
-  const mat = new THREE.MeshPhongMaterial({
-    color: 0x009999,
-    shininess: 0,
-    specular: 0xffffff,
-    shading: THREE.FlatShading,
-  });
-  this.mesh = new THREE.Mesh(geom, mat);
-};
-
-Particle.prototype.explode = function (pos, color, scale) {
-  const _this = this;
-  const _p = this.mesh.parent;
-  this.mesh.material.color = new THREE.Color(color);
-  this.mesh.material.needsUpdate = true;
-  this.mesh.scale.set(scale, scale, scale);
-  const targetX = pos.x + (-1 + Math.random() * 2) * 50;
-  const targetY = pos.y + (-1 + Math.random() * 2) * 50;
-  const speed = 0.6 + Math.random() * 0.2;
-  if(_p) _p.remove(_this.mesh);
-  _this.mesh.scale.set(1,1,1);
-};
-
 const Coin = function () {
   const geom = new THREE.TetrahedronGeometry(5, 0);
   const mat = new THREE.MeshPhongMaterial({
