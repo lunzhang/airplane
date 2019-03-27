@@ -9,12 +9,9 @@ let deltaTime = 0;
 let newTime = new Date().getTime();
 let oldTime = new Date().getTime();
 const enemiesPool = [];
-const particlesPool = [];
-const particlesInUse = [];
 let sky;
 let coinsHolder;
 let enemiesHolder;
-let particlesHolder;
 
 function resetGame() {
   game = {
@@ -327,14 +324,9 @@ EnemiesHolder.prototype.rotateEnemies = function () {
     const diffPos = airplane.mesh.position.clone().sub(enemy.mesh.position.clone());
     const d = diffPos.length();
     if (d < game.enemyDistanceTolerance) {
-      particlesHolder.spawnParticles(enemy.mesh.position.clone(), 15, Colors.red, 3);
-
       enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
-      game.planeCollisionSpeedX = 100 * diffPos.x / d;
-      game.planeCollisionSpeedY = 100 * diffPos.y / d;
       ambientLight.intensity = 2;
-
       removeEnergy();
       i--;
     } else if (enemy.angle > Math.PI) {
@@ -367,30 +359,6 @@ Particle.prototype.explode = function (pos, color, scale) {
   const speed = 0.6 + Math.random() * 0.2;
   if(_p) _p.remove(_this.mesh);
   _this.mesh.scale.set(1,1,1);
-  particlesPool.unshift(_this);
-};
-
-const ParticlesHolder = function () {
-  this.mesh = new THREE.Object3D();
-  this.particlesInUse = [];
-};
-
-ParticlesHolder.prototype.spawnParticles = function (pos, density, color, scale) {
-  const nPArticles = density;
-  for (let i = 0; i < nPArticles; i++) {
-    var particle;
-    if (particlesPool.length) {
-      particle = particlesPool.pop();
-    } else {
-      particle = new Particle();
-    }
-    this.mesh.add(particle.mesh);
-    particle.mesh.visible = true;
-    const _this = this;
-    particle.mesh.position.y = pos.y;
-    particle.mesh.position.x = pos.x;
-    particle.explode(pos, color, scale);
-  }
 };
 
 const Coin = function () {
@@ -455,7 +423,6 @@ CoinsHolder.prototype.rotateCoins = function () {
     if (d < game.coinDistanceTolerance) {
       this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
       this.mesh.remove(coin.mesh);
-      particlesHolder.spawnParticles(coin.mesh.position.clone(), 5, 0x009999, 0.8);
       addEnergy();
       i--;
     } else if (coin.angle > Math.PI) {
@@ -502,16 +469,6 @@ function createEnemies() {
   enemiesHolder = new EnemiesHolder();
   // enemiesHolder.mesh.position.y = -game.seaRadius;
   scene.add(enemiesHolder.mesh);
-}
-
-function createParticles() {
-  for (let i = 0; i < 10; i++) {
-    const particle = new Particle();
-    particlesPool.push(particle);
-  }
-  particlesHolder = new ParticlesHolder();
-  // enemiesHolder.mesh.position.y = -game.seaRadius;
-  scene.add(particlesHolder.mesh);
 }
 
 function loop() {
@@ -680,7 +637,6 @@ function init(event) {
   createSky();
   createCoins();
   createEnemies();
-  createParticles();
 
   document.addEventListener('mousemove', handleMouseMove, false);
   document.addEventListener('touchmove', handleTouchMove, false);
