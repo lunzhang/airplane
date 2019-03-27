@@ -66,15 +66,15 @@ function resetGame() {
 
     coinDistanceTolerance: 15,
     coinValue: 3,
-    coinsSpeed: 0.05,
+    coinsSpeed: 0.5,
     coinLastSpawn: 0,
-    distanceForCoinsSpawn: 100,
+    distanceForCoinsSpawn: 10,
 
     enemyDistanceTolerance: 10,
     enemyValue: 10,
-    enemiesSpeed: 0.06,
+    enemiesSpeed: 0.6,
     enemyLastSpawn: 0,
-    distanceForEnnemiesSpawn: 50,
+    distanceForEnemiesSpawn: 10,
 
     status: 'playing',
   };
@@ -290,10 +290,10 @@ const EnemiesHolder = function () {
   this.enemiesInUse = [];
 };
 
-EnemiesHolder.prototype.spawnEnnemies = function () {
-  const nEnnemies = game.level;
+EnemiesHolder.prototype.spawnEnemies = function () {
+  const nEnemies = game.level;
 
-  for (let i = 0; i < nEnnemies; i++) {
+  for (let i = 0; i < nEnemies; i++) {
     var enemy;
     if (enemiesPool.length) {
       enemy = enemiesPool.pop();
@@ -311,7 +311,7 @@ EnemiesHolder.prototype.spawnEnnemies = function () {
   }
 };
 
-EnemiesHolder.prototype.rotateEnnemies = function () {
+EnemiesHolder.prototype.rotateEnemies = function () {
   for (let i = 0; i < this.enemiesInUse.length; i++) {
     const enemy = this.enemiesInUse[i];
     enemy.angle += game.speed * deltaTime * game.enemiesSpeed;
@@ -365,13 +365,9 @@ Particle.prototype.explode = function (pos, color, scale) {
   const targetX = pos.x + (-1 + Math.random() * 2) * 50;
   const targetY = pos.y + (-1 + Math.random() * 2) * 50;
   const speed = 0.6 + Math.random() * 0.2;
-  // TweenMax.to(this.mesh.rotation, speed, {x:Math.random()*12, y:Math.random()*12});
-  // TweenMax.to(this.mesh.scale, speed, {x:.1, y:.1, z:.1});
-  // TweenMax.to(this.mesh.position, speed, {x:targetX, y:targetY, delay:Math.random() *.1, ease:Power2.easeOut, onComplete:function(){
-  //     if(_p) _p.remove(_this.mesh);
-  //     _this.mesh.scale.set(1,1,1);
-  //     particlesPool.unshift(_this);
-  //   }});
+  if(_p) _p.remove(_this.mesh);
+  _this.mesh.scale.set(1,1,1);
+  particlesPool.unshift(_this);
 };
 
 const ParticlesHolder = function () {
@@ -498,7 +494,7 @@ function createCoins() {
   scene.add(coinsHolder.mesh);
 }
 
-function createEnnemies() {
+function createEnemies() {
   for (let i = 0; i < 10; i++) {
     const enemy = new Enemy();
     enemiesPool.push(enemy);
@@ -535,9 +531,9 @@ function loop() {
       game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
     }
 
-    if (Math.floor(game.distance) % game.distanceForEnnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
+    if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
       game.enemyLastSpawn = Math.floor(game.distance);
-      enemiesHolder.spawnEnnemies();
+      enemiesHolder.spawnEnemies();
     }
 
     if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
@@ -573,7 +569,7 @@ function loop() {
   ambientLight.intensity += (0.5 - ambientLight.intensity) * deltaTime * 0.005;
 
   coinsHolder.rotateCoins();
-  enemiesHolder.rotateEnnemies();
+  enemiesHolder.rotateEnemies();
 
   sky.moveClouds();
   sea.moveWaves();
@@ -669,7 +665,6 @@ let levelCircle;
 
 function init(event) {
   // UI
-
   fieldDistance = document.getElementById('distValue');
   energyBar = document.getElementById('energyBar');
   replayMessage = document.getElementById('replayMessage');
@@ -684,7 +679,7 @@ function init(event) {
   createSea();
   createSky();
   createCoins();
-  createEnnemies();
+  createEnemies();
   createParticles();
 
   document.addEventListener('mousemove', handleMouseMove, false);
