@@ -18,7 +18,6 @@ function resetGame() {
     speed: 0,
     initSpeed: 0.00035,
     baseSpeed: 0.00035,
-    targetBaseSpeed: 0.00035,
     incrementSpeedByTime: 0.0000025,
     incrementSpeedByLevel: 0.000005,
     distanceForSpeedUpdate: 100,
@@ -79,7 +78,6 @@ function resetGame() {
 }
 
 // THREEJS RELATED VARIABLES
-
 let scene;
 let camera; let fieldOfView; let aspectRatio; let nearPlane; let farPlane;
 let renderer;
@@ -87,7 +85,6 @@ let container;
 let controls;
 
 // SCREEN & MOUSE VARIABLES
-
 let HEIGHT; let WIDTH;
 let mousePos = { x: 0, y: 0 };
 
@@ -213,7 +210,6 @@ const Sky = function () {
     this.mesh.add(c.mesh);
   }
 };
-
 Sky.prototype.moveClouds = function () {
   for (let i = 0; i < this.nClouds; i++) {
     const c = this.clouds[i];
@@ -254,7 +250,6 @@ const Sea = function () {
   this.mesh.name = 'waves';
   this.mesh.receiveShadow = true;
 };
-
 Sea.prototype.moveWaves = function () {
   const verts = this.mesh.geometry.vertices;
   const l = verts.length;
@@ -281,12 +276,10 @@ const Enemy = function () {
   this.angle = 0;
   this.dist = 0;
 };
-
 const EnemiesHolder = function () {
   this.mesh = new THREE.Object3D();
   this.enemiesInUse = [];
 };
-
 EnemiesHolder.prototype.spawnEnemies = function () {
   const nEnemies = game.level;
 
@@ -307,7 +300,6 @@ EnemiesHolder.prototype.spawnEnemies = function () {
     this.enemiesInUse.push(enemy);
   }
 };
-
 EnemiesHolder.prototype.rotateEnemies = function () {
   for (let i = 0; i < this.enemiesInUse.length; i++) {
     const enemy = this.enemiesInUse[i];
@@ -351,7 +343,6 @@ const Coin = function () {
   this.angle = 0;
   this.dist = 0;
 };
-
 const CoinsHolder = function (nCoins) {
   this.mesh = new THREE.Object3D();
   this.coinsInUse = [];
@@ -361,7 +352,6 @@ const CoinsHolder = function (nCoins) {
     this.coinsPool.push(coin);
   }
 };
-
 CoinsHolder.prototype.spawnCoins = function () {
   const nCoins = 1 + Math.floor(Math.random() * 10);
   const d = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight - 20);
@@ -381,7 +371,6 @@ CoinsHolder.prototype.spawnCoins = function () {
     coin.mesh.position.x = Math.cos(coin.angle) * coin.distance;
   }
 };
-
 CoinsHolder.prototype.rotateCoins = function () {
   for (let i = 0; i < this.coinsInUse.length; i++) {
     const coin = this.coinsInUse[i];
@@ -419,24 +408,20 @@ function createPlane() {
   airplane.mesh.position.y = game.planeDefaultHeight;
   scene.add(airplane.mesh);
 }
-
 function createSea() {
   sea = new Sea();
   sea.mesh.position.y = -game.seaRadius;
   scene.add(sea.mesh);
 }
-
 function createSky() {
   sky = new Sky();
   sky.mesh.position.y = -game.seaRadius;
   scene.add(sky.mesh);
 }
-
 function createCoins() {
   coinsHolder = new CoinsHolder(20);
   scene.add(coinsHolder.mesh);
 }
-
 function createEnemies() {
   for (let i = 0; i < 10; i++) {
     const enemy = new Enemy();
@@ -461,7 +446,6 @@ function loop() {
 
     if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
       game.speedLastUpdate = Math.floor(game.distance);
-      game.targetBaseSpeed += game.incrementSpeedByTime * deltaTime;
     }
 
     if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
@@ -473,14 +457,11 @@ function loop() {
       game.levelLastUpdate = Math.floor(game.distance);
       game.level++;
       fieldLevel.innerHTML = Math.floor(game.level);
-
-      game.targetBaseSpeed = game.initSpeed + game.incrementSpeedByLevel * game.level;
     }
 
     updatePlane();
     updateDistance();
     updateEnergy();
-    game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
     game.speed = game.baseSpeed * game.planeSpeed;
   } else if (game.status == 'gameover') {
     game.speed *= 0.99;
