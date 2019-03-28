@@ -15,11 +15,7 @@ let enemiesHolder;
 
 function resetGame() {
   game = {
-    speed: 0,
-    initSpeed: 0.00035,
-    baseSpeed: 0.00035,
-    incrementSpeedByTime: 0.0000025,
-    incrementSpeedByLevel: 0.000005,
+    speed: 0.00035,
     distanceForSpeedUpdate: 100,
     speedLastUpdate: 0,
 
@@ -39,9 +35,6 @@ function resetGame() {
     planeRotXSensivity: 0.0008,
     planeRotZSensivity: 0.0004,
     planeFallSpeed: 0.001,
-    planeMinSpeed: 1.2,
-    planeMaxSpeed: 1.6,
-    planeSpeed: 0,
     planeCollisionDisplacementX: 0,
     planeCollisionSpeedX: 0,
 
@@ -55,10 +48,6 @@ function resetGame() {
     wavesMaxAmp: 20,
     wavesMinSpeed: 0.001,
     wavesMaxSpeed: 0.003,
-
-    cameraFarPos: 500,
-    cameraNearPos: 150,
-    cameraSensivity: 0.002,
 
     coinDistanceTolerance: 15,
     coinValue: 3,
@@ -79,7 +68,11 @@ function resetGame() {
 
 // THREEJS RELATED VARIABLES
 let scene;
-let camera; let fieldOfView; let aspectRatio; let nearPlane; let farPlane;
+let camera;
+let fieldOfView;
+let aspectRatio;
+let nearPlane;
+let farPlane;
 let renderer;
 let container;
 let controls;
@@ -462,7 +455,6 @@ function loop() {
     updatePlane();
     updateDistance();
     updateEnergy();
-    game.speed = game.baseSpeed * game.planeSpeed;
   } else if (game.status == 'gameover') {
     game.speed *= 0.99;
     airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002 * deltaTime;
@@ -475,7 +467,7 @@ function loop() {
       game.status = 'waitingReplay';
     }
   }
-  airplane.propeller.rotation.x += 0.2 + game.planeSpeed * deltaTime * 0.005;
+  airplane.propeller.rotation.x += 0.2 + deltaTime * 0.005;
   sea.mesh.rotation.z += game.speed * deltaTime;//* game.seaRotationSpeed;
 
   if (sea.mesh.rotation.z > 2 * Math.PI) sea.mesh.rotation.z -= 2 * Math.PI;
@@ -498,8 +490,6 @@ function updateDistance() {
   const d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
   levelCircle.setAttribute('stroke-dashoffset', d);
 }
-
-const blinkEnergy = false;
 
 function updateEnergy() {
   game.energy -= game.speed * deltaTime * game.ratioSpeedEnergy;
@@ -529,7 +519,6 @@ function removeEnergy() {
 }
 
 function updatePlane() {
-  game.planeSpeed = normalize(mousePos.x, -0.5, 0.5, game.planeMinSpeed, game.planeMaxSpeed);
   let targetY = normalize(mousePos.y, -0.75, 0.75, game.planeDefaultHeight - game.planeAmpHeight, game.planeDefaultHeight + game.planeAmpHeight);
   let targetX = normalize(mousePos.x, -1, 1, -game.planeAmpWidth * 0.7, -game.planeAmpWidth);
 
