@@ -5,7 +5,6 @@ import Cloud from './Cloud';
 
 // GAME VARIABLES
 let game;
-let deltaTime = 0;
 let newTime = new Date().getTime();
 let oldTime = new Date().getTime();
 const enemiesPool = [];
@@ -201,7 +200,7 @@ Sky.prototype.moveClouds = function () {
     const c = this.clouds[i];
     c.rotate();
   }
-  this.mesh.rotation.z += game.speed * deltaTime;
+  this.mesh.rotation.z += game.speed;
 };
 
 const Sea = function () {
@@ -244,7 +243,7 @@ Sea.prototype.moveWaves = function () {
     const vprops = this.waves[i];
     v.x = vprops.x + Math.cos(vprops.ang) * vprops.amp;
     v.y = vprops.y + Math.sin(vprops.ang) * vprops.amp;
-    vprops.ang += vprops.speed * deltaTime;
+    vprops.ang += vprops.speed;
     this.mesh.geometry.verticesNeedUpdate = true;
   }
 };
@@ -285,7 +284,7 @@ EnemiesHolder.prototype.spawnEnemies = function () {
 EnemiesHolder.prototype.rotateEnemies = function () {
   for (let i = 0; i < this.enemiesInUse.length; i++) {
     const enemy = this.enemiesInUse[i];
-    enemy.angle += game.speed * deltaTime * game.enemiesSpeed;
+    enemy.angle += game.speed * game.enemiesSpeed;
 
     if (enemy.angle > Math.PI * 2) enemy.angle -= Math.PI * 2;
 
@@ -356,7 +355,7 @@ CoinsHolder.prototype.rotateCoins = function () {
   for (let i = 0; i < this.coinsInUse.length; i++) {
     const coin = this.coinsInUse[i];
     if (coin.exploding) continue;
-    coin.angle += game.speed * deltaTime * game.coinsSpeed;
+    coin.angle += game.speed * game.coinsSpeed;
     if (coin.angle > Math.PI * 2) coin.angle -= Math.PI * 2;
     coin.mesh.position.y = -game.seaRadius + Math.sin(coin.angle) * coin.distance;
     coin.mesh.position.x = Math.cos(coin.angle) * coin.distance;
@@ -413,10 +412,6 @@ function createEnemies() {
 }
 
 function loop() {
-  newTime = new Date().getTime();
-  deltaTime = newTime - oldTime;
-  oldTime = newTime;
-
   if (game.status == 'playing') {
     // Add coins every 100m;
     if (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
@@ -437,22 +432,22 @@ function loop() {
     updateDistance();
   } else if (game.status == 'gameover') {
     game.speed *= 0.99;
-    airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002 * deltaTime;
-    airplane.mesh.rotation.x += 0.0003 * deltaTime;
+    airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002;
+    airplane.mesh.rotation.x += 0.0003;
     game.planeFallSpeed *= 1.05;
-    airplane.mesh.position.y -= game.planeFallSpeed * deltaTime;
+    airplane.mesh.position.y -= game.planeFallSpeed;
 
     if (airplane.mesh.position.y < -10) {
       showReplay();
       game.status = 'waitingReplay';
     }
   }
-  airplane.propeller.rotation.x += 0.2 + deltaTime * 0.005;
-  sea.mesh.rotation.z += game.speed * deltaTime;//* game.seaRotationSpeed;
+  airplane.propeller.rotation.x += 0.2 + 0.005;
+  sea.mesh.rotation.z += game.speed;
 
   if (sea.mesh.rotation.z > 2 * Math.PI) sea.mesh.rotation.z -= 2 * Math.PI;
 
-  ambientLight.intensity += (0.5 - ambientLight.intensity) * deltaTime * 0.005;
+  ambientLight.intensity += (0.5 - ambientLight.intensity) * 0.005;
 
   coinsHolder.rotateCoins();
   enemiesHolder.rotateEnemies();
@@ -465,7 +460,7 @@ function loop() {
 }
 
 function updateDistance() {
-  game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
+  game.distance += game.speed * game.ratioSpeedDistance;
   fieldDistance.innerHTML = Math.floor(game.distance);
 }
 
@@ -480,16 +475,16 @@ function updatePlane() {
   game.planeCollisionDisplacementY += game.planeCollisionSpeedY;
   targetY += game.planeCollisionDisplacementY;
 
-  airplane.mesh.position.y += (targetY - airplane.mesh.position.y) * deltaTime * game.planeMoveSensivity;
-  airplane.mesh.position.x += (targetX - airplane.mesh.position.x) * deltaTime * game.planeMoveSensivity;
+  airplane.mesh.position.y += (targetY - airplane.mesh.position.y) * game.planeMoveSensivity;
+  airplane.mesh.position.x += (targetX - airplane.mesh.position.x) * game.planeMoveSensivity;
 
-  airplane.mesh.rotation.z = (targetY - airplane.mesh.position.y) * deltaTime * game.planeRotXSensivity;
-  airplane.mesh.rotation.x = (airplane.mesh.position.y - targetY) * deltaTime * game.planeRotZSensivity;
+  airplane.mesh.rotation.z = (targetY - airplane.mesh.position.y) * game.planeRotXSensivity;
+  airplane.mesh.rotation.x = (airplane.mesh.position.y - targetY) * game.planeRotZSensivity;
 
-  game.planeCollisionSpeedX += (0 - game.planeCollisionSpeedX) * deltaTime * 0.03;
-  game.planeCollisionDisplacementX += (0 - game.planeCollisionDisplacementX) * deltaTime * 0.01;
-  game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * deltaTime * 0.03;
-  game.planeCollisionDisplacementY += (0 - game.planeCollisionDisplacementY) * deltaTime * 0.01;
+  game.planeCollisionSpeedX += (0 - game.planeCollisionSpeedX) * 0.03;
+  game.planeCollisionDisplacementX += (0 - game.planeCollisionDisplacementX) * 0.01;
+  game.planeCollisionSpeedY += (0 - game.planeCollisionSpeedY) * 0.03;
+  game.planeCollisionDisplacementY += (0 - game.planeCollisionDisplacementY) * 0.01;
 
   airplane.pilot.updateHairs();
 }
