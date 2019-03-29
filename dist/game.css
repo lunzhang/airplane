@@ -83,21 +83,8 @@
 	color: #d1b790;
 }
 
-.score__value--level {
-	font-size: 26px;
-}
-
 .score__value--dist {
 	font-size: 30px;
-}
-
-.level-circle {
-	position: absolute;
-	left: 50%;
-	width: 46px;
-	margin: -37px 0 0 -23px;
-	-webkit-transform: rotate(-90deg);
-	transform: rotate(-90deg);
 }
 
 .message {
@@ -131,18 +118,6 @@
 	display: block;
 	color: #d6483b;
 	white-space: nowrap;
-}
-
-@-webkit-keyframes blinking {
-	0% { opacity: 1; }
-	50% { opacity: 0; }
-	100% { opacity: 1; }
-}
-
-@keyframes blinking {
-	0% { opacity: 1; }
-	50% { opacity: 0; }
-	100% { opacity: 1; }
 }
 
 @media screen and (max-width: 40em) {

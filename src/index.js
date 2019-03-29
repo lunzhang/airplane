@@ -22,10 +22,6 @@ function resetGame() {
     distance: 0,
     ratioSpeedDistance: 50,
 
-    level: 1,
-    levelLastUpdate: 0,
-    distanceForLevelUpdate: 1000,
-
     planeDefaultHeight: 100,
     planeAmpHeight: 80,
     planeAmpWidth: 75,
@@ -61,7 +57,6 @@ function resetGame() {
 
     status: 'playing',
   };
-  fieldLevel.innerHTML = Math.floor(game.level);
 }
 
 // THREEJS RELATED VARIABLES
@@ -272,24 +267,20 @@ const EnemiesHolder = function () {
   this.enemiesInUse = [];
 };
 EnemiesHolder.prototype.spawnEnemies = function () {
-  const nEnemies = game.level;
-
-  for (let i = 0; i < nEnemies; i++) {
-    var enemy;
-    if (enemiesPool.length) {
-      enemy = enemiesPool.pop();
-    } else {
-      enemy = new Enemy();
-    }
-
-    enemy.angle = -(i * 0.1);
-    enemy.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight - 20);
-    enemy.mesh.position.y = -game.seaRadius + Math.sin(enemy.angle) * enemy.distance;
-    enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
-
-    this.mesh.add(enemy.mesh);
-    this.enemiesInUse.push(enemy);
+  var enemy;
+  if (enemiesPool.length) {
+    enemy = enemiesPool.pop();
+  } else {
+    enemy = new Enemy();
   }
+
+  enemy.angle = -0.1;
+  enemy.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight - 20);
+  enemy.mesh.position.y = -game.seaRadius + Math.sin(enemy.angle) * enemy.distance;
+  enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
+
+  this.mesh.add(enemy.mesh);
+  this.enemiesInUse.push(enemy);
 };
 EnemiesHolder.prototype.rotateEnemies = function () {
   for (let i = 0; i < this.enemiesInUse.length; i++) {
@@ -442,12 +433,6 @@ function loop() {
       enemiesHolder.spawnEnemies();
     }
 
-    if (Math.floor(game.distance) % game.distanceForLevelUpdate == 0 && Math.floor(game.distance) > game.levelLastUpdate) {
-      game.levelLastUpdate = Math.floor(game.distance);
-      game.level++;
-      fieldLevel.innerHTML = Math.floor(game.level);
-    }
-
     updatePlane();
     updateDistance();
   } else if (game.status == 'gameover') {
@@ -482,8 +467,6 @@ function loop() {
 function updateDistance() {
   game.distance += game.speed * deltaTime * game.ratioSpeedDistance;
   fieldDistance.innerHTML = Math.floor(game.distance);
-  const d = 502 * (1 - (game.distance % game.distanceForLevelUpdate) / game.distanceForLevelUpdate);
-  levelCircle.setAttribute('stroke-dashoffset', d);
 }
 
 function updatePlane() {
@@ -529,15 +512,11 @@ function normalize(v, vmin, vmax, tmin, tmax) {
 
 let fieldDistance;
 let replayMessage;
-let fieldLevel;
-let levelCircle;
 
 function init(event) {
   // UI
   fieldDistance = document.getElementById('distValue');
   replayMessage = document.getElementById('replayMessage');
-  fieldLevel = document.getElementById('levelValue');
-  levelCircle = document.getElementById('levelCircleStroke');
 
   resetGame();
   createScene();
