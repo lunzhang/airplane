@@ -5,8 +5,6 @@ import Cloud from './Cloud';
 
 // GAME VARIABLES
 let game;
-let newTime = new Date().getTime();
-let oldTime = new Date().getTime();
 const enemiesPool = [];
 let sky;
 let coinsHolder;
@@ -14,7 +12,7 @@ let enemiesHolder;
 
 function resetGame() {
   game = {
-    speed: 0.00035,
+    speed: 0.0035,
     distanceForSpeedUpdate: 100,
     speedLastUpdate: 0,
 
@@ -24,10 +22,10 @@ function resetGame() {
     planeDefaultHeight: 100,
     planeAmpHeight: 80,
     planeAmpWidth: 75,
-    planeMoveSensivity: 0.005,
-    planeRotXSensivity: 0.0008,
-    planeRotZSensivity: 0.0004,
-    planeFallSpeed: 0.001,
+    planeMoveSensivity: 0.05,
+    planeRotXSensivity: 0.008,
+    planeRotZSensivity: 0.004,
+    planeFallSpeed: 0.01,
     planeCollisionDisplacementX: 0,
     planeCollisionSpeedX: 0,
 
@@ -432,8 +430,8 @@ function loop() {
     updateDistance();
   } else if (game.status == 'gameover') {
     game.speed *= 0.99;
-    airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002;
-    airplane.mesh.rotation.x += 0.0003;
+    airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.002;
+    airplane.mesh.rotation.x += 0.003;
     game.planeFallSpeed *= 1.05;
     airplane.mesh.position.y -= game.planeFallSpeed;
 
@@ -442,7 +440,7 @@ function loop() {
       game.status = 'waitingReplay';
     }
   }
-  airplane.propeller.rotation.x += 0.2 + 0.005;
+  airplane.propeller.rotation.x += 0.25;
   sea.mesh.rotation.z += game.speed;
 
   if (sea.mesh.rotation.z > 2 * Math.PI) sea.mesh.rotation.z -= 2 * Math.PI;
