@@ -321,14 +321,10 @@ const Coin = function () {
   this.angle = 0;
   this.dist = 0;
 };
-const CoinsHolder = function (nCoins) {
+const CoinsHolder = function () {
   this.mesh = new THREE.Object3D();
   this.coinsInUse = [];
   this.coinsPool = [];
-  for (let i = 0; i < nCoins; i++) {
-    const coin = new Coin();
-    this.coinsPool.push(coin);
-  }
 };
 CoinsHolder.prototype.spawnCoins = function () {
   const nCoins = 1 + Math.floor(Math.random() * 10);
@@ -396,16 +392,11 @@ function createSky() {
   scene.add(sky.mesh);
 }
 function createCoins() {
-  coinsHolder = new CoinsHolder(20);
+  coinsHolder = new CoinsHolder();
   scene.add(coinsHolder.mesh);
 }
 function createEnemies() {
-  for (let i = 0; i < 10; i++) {
-    const enemy = new Enemy();
-    enemiesPool.push(enemy);
-  }
   enemiesHolder = new EnemiesHolder();
-  // enemiesHolder.mesh.position.y = -game.seaRadius;
   scene.add(enemiesHolder.mesh);
 }
 
