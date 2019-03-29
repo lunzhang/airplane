@@ -3,6 +3,8 @@ import Colors from './Colors';
 import Airplane from './Airplane';
 import Cloud from './Cloud';
 
+const SPAWN_DISTANCE = 0.8;
+
 // GAME VARIABLES
 let game;
 const enemiesPool = [];
@@ -226,7 +228,6 @@ const Sea = function () {
     transparent: true,
     opacity: 0.8,
     shading: THREE.FlatShading,
-
   });
 
   this.mesh = new THREE.Mesh(geom, mat);
@@ -271,7 +272,7 @@ EnemiesHolder.prototype.spawnEnemies = function () {
     enemy = new Enemy();
   }
 
-  enemy.angle = -0.1;
+  enemy.angle = SPAWN_DISTANCE;
   enemy.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight - 20);
   enemy.mesh.position.y = -game.seaRadius + Math.sin(enemy.angle) * enemy.distance;
   enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
@@ -339,7 +340,7 @@ CoinsHolder.prototype.spawnCoins = function () {
     }
     this.mesh.add(coin.mesh);
     this.coinsInUse.push(coin);
-    coin.angle = -(i * 0.02);
+    coin.angle = SPAWN_DISTANCE + (i * 0.02);
     coin.distance = d + Math.cos(i * 0.5) * amplitude;
     coin.mesh.position.y = -game.seaRadius + Math.sin(coin.angle) * coin.distance;
     coin.mesh.position.x = Math.cos(coin.angle) * coin.distance;
