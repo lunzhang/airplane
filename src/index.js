@@ -21,8 +21,6 @@ function resetGame() {
 
     distance: 0,
     ratioSpeedDistance: 50,
-    energy: 100,
-    ratioSpeedEnergy: 3,
 
     level: 1,
     levelLastUpdate: 0,
@@ -53,7 +51,7 @@ function resetGame() {
     coinValue: 3,
     coinsSpeed: 0.5,
     coinLastSpawn: 0,
-    distanceForCoinsSpawn: 10,
+    distanceForCoinsSpawn: 15,
 
     enemyDistanceTolerance: 10,
     enemyValue: 10,
@@ -311,8 +309,7 @@ EnemiesHolder.prototype.rotateEnemies = function () {
     if (d < game.enemyDistanceTolerance) {
       enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
-      ambientLight.intensity = 2;
-      removeEnergy();
+      game.status = 'gameover';
       i--;
     } else if (enemy.angle > Math.PI) {
       enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
@@ -381,7 +378,6 @@ CoinsHolder.prototype.rotateCoins = function () {
     if (d < game.coinDistanceTolerance) {
       this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
       this.mesh.remove(coin.mesh);
-      addEnergy();
       i--;
     } else if (coin.angle > Math.PI) {
       this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
@@ -431,7 +427,7 @@ function loop() {
   oldTime = newTime;
 
   if (game.status == 'playing') {
-    // Add energy coins every 100m;
+    // Add coins every 100m;
     if (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
       game.coinLastSpawn = Math.floor(game.distance);
       coinsHolder.spawnCoins();
@@ -454,7 +450,6 @@ function loop() {
 
     updatePlane();
     updateDistance();
-    updateEnergy();
   } else if (game.status == 'gameover') {
     game.speed *= 0.99;
     airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.0002 * deltaTime;
@@ -491,33 +486,6 @@ function updateDistance() {
   levelCircle.setAttribute('stroke-dashoffset', d);
 }
 
-function updateEnergy() {
-  game.energy -= game.speed * deltaTime * game.ratioSpeedEnergy;
-  game.energy = Math.max(0, game.energy);
-  energyBar.style.right = `${100 - game.energy}%`;
-  energyBar.style.backgroundColor = (game.energy < 50) ? '#f25346' : '#68c3c0';
-
-  if (game.energy < 30) {
-    energyBar.style.animationName = 'blinking';
-  } else {
-    energyBar.style.animationName = 'none';
-  }
-
-  if (game.energy < 1) {
-    game.status = 'gameover';
-  }
-}
-
-function addEnergy() {
-  game.energy += game.coinValue;
-  game.energy = Math.min(game.energy, 100);
-}
-
-function removeEnergy() {
-  game.energy -= game.enemyValue;
-  game.energy = Math.max(0, game.energy);
-}
-
 function updatePlane() {
   let targetY = normalize(mousePos.y, -0.75, 0.75, game.planeDefaultHeight - game.planeAmpHeight, game.planeDefaultHeight + game.planeAmpHeight);
   let targetX = normalize(mousePos.x, -1, 1, -game.planeAmpWidth * 0.7, -game.planeAmpWidth);
@@ -546,7 +514,6 @@ function updatePlane() {
 function showReplay() {
   replayMessage.style.display = 'block';
 }
-
 function hideReplay() {
   replayMessage.style.display = 'none';
 }
@@ -561,7 +528,6 @@ function normalize(v, vmin, vmax, tmin, tmax) {
 }
 
 let fieldDistance;
-let energyBar;
 let replayMessage;
 let fieldLevel;
 let levelCircle;
@@ -569,7 +535,6 @@ let levelCircle;
 function init(event) {
   // UI
   fieldDistance = document.getElementById('distValue');
-  energyBar = document.getElementById('energyBar');
   replayMessage = document.getElementById('replayMessage');
   fieldLevel = document.getElementById('levelValue');
   levelCircle = document.getElementById('levelCircleStroke');
