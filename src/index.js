@@ -61,16 +61,12 @@ function resetGame() {
 // THREEJS RELATED VARIABLES
 let scene;
 let camera;
-let fieldOfView;
-let aspectRatio;
-let nearPlane;
-let farPlane;
 let renderer;
 let container;
-let controls;
 
 // SCREEN & MOUSE VARIABLES
-let HEIGHT; let WIDTH;
+let HEIGHT;
+let WIDTH;
 let mousePos = { x: 0, y: 0 };
 
 // INIT THREE JS, SCREEN AND MOUSE EVENTS
@@ -79,15 +75,11 @@ function createScene() {
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
-  aspectRatio = WIDTH / HEIGHT;
-  fieldOfView = 50;
-  nearPlane = 0.1;
-  farPlane = 10000;
   camera = new THREE.PerspectiveCamera(
-    fieldOfView,
-    aspectRatio,
-    nearPlane,
-    farPlane,
+    50,
+    WIDTH / HEIGHT,
+    0.1,
+    10000,
   );
   scene.fog = new THREE.Fog(0xf7d9aa, 100, 950);
   camera.position.x = 0;
@@ -104,15 +96,6 @@ function createScene() {
   container.appendChild(renderer.domElement);
 
   window.addEventListener('resize', handleWindowResize, false);
-
-  /*
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.minPolarAngle = -Math.PI / 2;
-  controls.maxPolarAngle = Math.PI ;
-
-  //controls.noZoom = true;
-  //controls.noPan = true;
-  // */
 }
 
 // MOUSE AND SCREEN EVENTS
@@ -427,7 +410,7 @@ function loop() {
     game.planeFallSpeed *= 1.05;
     airplane.mesh.position.y -= game.planeFallSpeed;
 
-    if (airplane.mesh.position.y < -10) {
+    if (airplane.mesh.position.y < -50) {
       showReplay();
       game.status = 'waitingReplay';
     }
