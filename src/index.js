@@ -133,13 +133,13 @@ function handleTouchMove(event) {
   mousePos = { x: tx, y: ty };
 }
 function handleMouseUp(event) {
-  if (game.status == 'waitingReplay') {
+  if (game.status === 'waitingReplay') {
     resetGame();
     hideReplay();
   }
 }
 function handleTouchEnd(event) {
-  if (game.status == 'waitingReplay') {
+  if (game.status === 'waitingReplay') {
     resetGame();
     hideReplay();
   }
@@ -410,25 +410,25 @@ function createEnemies() {
 }
 
 function loop() {
-  if (game.status == 'playing') {
+  if (game.status === 'playing') {
     // Add coins every 100m;
-    if (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn) {
+    if (Math.floor(game.distance) % game.distanceForCoinsSpawn === 0 && Math.floor(game.distance) > game.coinLastSpawn) {
       game.coinLastSpawn = Math.floor(game.distance);
       coinsHolder.spawnCoins();
     }
 
-    if (Math.floor(game.distance) % game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate) {
+    if (Math.floor(game.distance) % game.distanceForSpeedUpdate === 0 && Math.floor(game.distance) > game.speedLastUpdate) {
       game.speedLastUpdate = Math.floor(game.distance);
     }
 
-    if (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
+    if (Math.floor(game.distance) % game.distanceForEnemiesSpawn === 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
       game.enemyLastSpawn = Math.floor(game.distance);
       enemiesHolder.spawnEnemies();
     }
 
     updatePlane();
     updateDistance();
-  } else if (game.status == 'gameover') {
+  } else if (game.status === 'gameover') {
     game.speed *= 0.99;
     airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.002;
     airplane.mesh.rotation.x += 0.003;
