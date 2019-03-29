@@ -4,7 +4,6 @@ import Airplane from './Airplane';
 import Cloud from './Cloud';
 
 const SPAWN_DISTANCE = 0.8;
-const enemiesPool = [];
 
 // GAME VARIABLES
 let game;
@@ -249,11 +248,12 @@ const Enemy = function () {
 const EnemiesHolder = function () {
   this.mesh = new THREE.Object3D();
   this.enemiesInUse = [];
+  this.enemiesPool = [];
 };
 EnemiesHolder.prototype.spawnEnemies = function () {
   var enemy;
-  if (enemiesPool.length) {
-    enemy = enemiesPool.pop();
+  if (this.enemiesPool.length) {
+    enemy = this.enemiesPool.pop();
   } else {
     enemy = new Enemy();
   }
@@ -282,16 +282,23 @@ EnemiesHolder.prototype.rotateEnemies = function () {
     const diffPos = airplane.mesh.position.clone().sub(enemy.mesh.position.clone());
     const d = diffPos.length();
     if (d < game.enemyDistanceTolerance) {
-      enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
       game.status = 'gameover';
       i--;
     } else if (enemy.angle > Math.PI) {
-      enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
       i--;
     }
   }
+};
+EnemiesHolder.prototype.reset = function () {
+  this.enemiesInUse.forEach(enemy => {
+    this.enemiesPool.push(enemy);
+    this.mesh.remove(enemy.mesh);
+  });
+  this.enemiesInUse = [];
 };
 
 const Coin = function () {
@@ -335,7 +342,6 @@ CoinsHolder.prototype.spawnCoins = function () {
 CoinsHolder.prototype.rotateCoins = function () {
   for (let i = 0; i < this.coinsInUse.length; i++) {
     const coin = this.coinsInUse[i];
-    if (coin.exploding) continue;
     coin.angle += game.speed * game.coinsSpeed;
     if (coin.angle > Math.PI * 2) coin.angle -= Math.PI * 2;
     coin.mesh.position.y = -game.seaRadius + Math.sin(coin.angle) * coin.distance;
@@ -356,6 +362,13 @@ CoinsHolder.prototype.rotateCoins = function () {
       i--;
     }
   }
+};
+CoinsHolder.prototype.reset = function () {
+  this.coinsInUse.forEach(coin => {
+    this.coinsPool.push(coin);
+    this.mesh.remove(coin.mesh);
+  });
+  this.coinsInUse = [];
 };
 
 function createPlane() {
@@ -466,6 +479,8 @@ function showReplay() {
 }
 function hideReplay() {
   replayMessage.style.display = 'none';
+  coinsHolder.reset();
+  enemiesHolder.reset();
 }
 
 function normalize(v, vmin, vmax, tmin, tmax) {
