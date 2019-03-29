@@ -9,7 +9,6 @@ const Cloud = function () {
     color: Colors.white,
   });
 
-  //*
   const nBlocs = 3 + Math.floor(Math.random() * 3);
   for (let i = 0; i < nBlocs; i++) {
     const m = new THREE.Mesh(geom.clone(), mat);
@@ -24,7 +23,6 @@ const Cloud = function () {
     m.castShadow = true;
     m.receiveShadow = true;
   }
-  //* /
 };
 
 Cloud.prototype.rotate = function () {

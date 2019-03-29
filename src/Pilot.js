@@ -85,7 +85,7 @@ Pilot.prototype.updateHairs = function () {
     const h = hairs[i];
     h.scale.y = 0.75 + Math.cos(this.angleHairs + i / 3) * 0.25;
   }
-  this.angleHairs += .04;
+  this.angleHairs += 0.04;
 };
 
 export default Pilot;

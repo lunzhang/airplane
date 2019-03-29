@@ -7,6 +7,7 @@ module.exports = {
     "airbnb-base",
   ],
   "rules": {
+    "func-names": 0,
     "no-mixed-operators": 0,
     "no-param-reassign": 0,
     "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
