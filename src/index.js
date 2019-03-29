@@ -4,13 +4,31 @@ import Airplane from './Airplane';
 import Cloud from './Cloud';
 
 const SPAWN_DISTANCE = 0.8;
+const enemiesPool = [];
 
 // GAME VARIABLES
 let game;
-const enemiesPool = [];
 let sky;
 let coinsHolder;
 let enemiesHolder;
+// THREEJS RELATED VARIABLES
+let scene;
+let camera;
+let renderer;
+let container;
+// SCREEN & MOUSE VARIABLES
+let HEIGHT;
+let WIDTH;
+let mousePos = { x: 0, y: 0 };
+// LIGHTS
+let ambientLight;
+let hemisphereLight;
+let shadowLight;
+// 3D Models
+let sea;
+let airplane;
+let fieldDistance;
+let replayMessage;
 
 function resetGame() {
   game = {
@@ -57,17 +75,6 @@ function resetGame() {
     status: 'playing',
   };
 }
-
-// THREEJS RELATED VARIABLES
-let scene;
-let camera;
-let renderer;
-let container;
-
-// SCREEN & MOUSE VARIABLES
-let HEIGHT;
-let WIDTH;
-let mousePos = { x: 0, y: 0 };
 
 // INIT THREE JS, SCREEN AND MOUSE EVENTS
 function createScene() {
@@ -130,10 +137,6 @@ function handleTouchEnd(event) {
   }
 }
 
-// LIGHTS
-let ambientLight;
-let hemisphereLight;
-let shadowLight;
 function createLights() {
   hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 0.9);
 
@@ -355,10 +358,6 @@ CoinsHolder.prototype.rotateCoins = function () {
   }
 };
 
-// 3D Models
-let sea;
-let airplane;
-
 function createPlane() {
   airplane = new Airplane();
   airplane.mesh.scale.set(0.25, 0.25, 0.25);
@@ -477,9 +476,6 @@ function normalize(v, vmin, vmax, tmin, tmax) {
   const tv = tmin + (pc * dt);
   return tv;
 }
-
-let fieldDistance;
-let replayMessage;
 
 function init(event) {
   // UI
