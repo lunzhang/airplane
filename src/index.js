@@ -31,7 +31,7 @@ let replayMessage;
 function resetGame() {
   game = {
     speed: 0.0035,
-    distanceForSpeedUpdate: 100,
+    distanceForSpeedUpdate: 5,
     speedLastUpdate: 0,
 
     distance: 0,
@@ -318,6 +318,9 @@ function loop() {
   if (game.status === 'playing') {
     if (Math.floor(game.distance) % game.distanceForSpeedUpdate === 0 && Math.floor(game.distance) > game.speedLastUpdate) {
       game.speedLastUpdate = Math.floor(game.distance);
+      if (game.speed < 0.015) {
+        game.speed += 0.0001;
+      }
     }
 
     if (Math.floor(game.distance) % game.distanceForEnemiesSpawn === 0 && Math.floor(game.distance) > game.enemyLastSpawn) {
