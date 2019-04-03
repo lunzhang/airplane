@@ -3,7 +3,7 @@ import Colors from './Colors';
 import Airplane from './Airplane';
 import Cloud from './Cloud';
 
-const SPAWN_DISTANCE = 0.8;
+const SPAWN_DISTANCE = 1;
 
 // GAME VARIABLES
 let game;
@@ -57,11 +57,11 @@ function resetGame() {
     wavesMinSpeed: 0.001,
     wavesMaxSpeed: 0.003,
 
-    enemyDistanceTolerance: 10,
+    enemyDistanceTolerance: 15,
     enemyValue: 10,
     enemiesSpeed: 0.6,
     enemyLastSpawn: 0,
-    distanceForEnemiesSpawn: 10,
+    distanceForEnemiesSpawn: 5,
 
     status: 'playing',
   };
@@ -251,7 +251,7 @@ EnemiesHolder.prototype.spawnEnemies = function () {
   }
 
   enemy.angle = SPAWN_DISTANCE;
-  enemy.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight - 20);
+  enemy.distance = game.seaRadius + game.planeDefaultHeight + (-1 + Math.random() * 2) * (game.planeAmpHeight);
   enemy.mesh.position.y = -game.seaRadius + Math.sin(enemy.angle) * enemy.distance;
   enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
 
