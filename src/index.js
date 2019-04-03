@@ -53,7 +53,6 @@ function resetGame() {
 
     seaRadius: 600,
     seaLength: 800,
-    // seaRotationSpeed:0.006,
     wavesMinAmp: 5,
     wavesMaxAmp: 20,
     wavesMinSpeed: 0.001,
@@ -416,7 +415,6 @@ function loop() {
     updatePlane();
     updateDistance();
   } else if (game.status === 'gameover') {
-    game.speed *= 0.99;
     airplane.mesh.rotation.z += (-Math.PI / 2 - airplane.mesh.rotation.z) * 0.002;
     airplane.mesh.rotation.x += 0.003;
     game.planeFallSpeed *= 1.05;
